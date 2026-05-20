@@ -1,76 +1,124 @@
 import { useNavigate } from "react-router-dom";
-import { Bot, Users, ArrowRight } from "lucide-react";
+import { Bot, User, CheckCircle2, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Interview() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen text-white flex items-center justify-center px-6">
-      <div className="max-w-5xl w-full text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-          Your Interview. Your Way.
-        </h1>
-        <p className="text-gray-300 text-lg mb-14 max-w-2xl mx-auto">
-          Choose how you want to prepare — connect with real interviewers or
-          practice anytime with AI-powered mock interviews.
-        </p>
+    <div className="min-h-screen text-gray-900 flex flex-col items-center justify-center px-6 py-24 bg-transparent">
+      
+      {/* Decorative Blur */}
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+      
+      <div className="max-w-6xl w-full text-center relative z-10">
+        
+        <motion.div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-sm font-bold uppercase tracking-wider mb-6"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          Preparation Hub
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Real Interview */}
-          <div
+        <motion.h1
+          className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          Choose how you want to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">prepare</span>
+        </motion.h1>
+
+        <motion.p
+          className="text-gray-600 text-lg md:text-xl mb-16 max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          Whether you want a quick self-paced mock interview or a fully immersive AI-driven experience, pick the mode that fits your style.
+        </motion.p>
+
+        {/* Cards Container */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto text-left">
+          
+          {/* Real Interview Mode */}
+          <motion.div
+            className="group relative p-8 md:p-10 rounded-[2rem] bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            whileHover={{ y: -8, borderColor: '#d1d5db' }}
             onClick={() => navigate("/interview-entry")}
-            className="p-8 rounded-2xl border border-gray-800 bg-linear-to-b from-[#0B1220] to-[#070B14]
-            group cursor-pointer shadow-lg hover:shadow-2xl transition duration-300
-            hover:border-indigo-500/60 hover:-translate-y-1 relative overflow-hidden"
           >
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-indigo-500/10" />
+            <div>
+              <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                <User className="w-8 h-8 text-gray-700" />
+              </div>
+              <h3 className="text-3xl font-bold mb-4">
+                Self-Guided Practice
+              </h3>
+              <p className="text-gray-600 mb-8 leading-relaxed text-lg">
+                Practice hand-picked interview questions inspired by real technical rounds at your own pace.
+              </p>
 
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500/10 border border-indigo-500/20 mx-auto mb-6">
-              <Users className="w-7 h-7 text-indigo-400" />
+              <div className="space-y-4 mb-10">
+                {["Role-based technical questions", "Behavioral & cultural fit focus", "Self-paced without time pressure"].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-gray-400 flex-shrink-0" />
+                    <span className="text-gray-700 font-medium">{feature}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-200 mb-3">
-              Real Interview
-            </h2>
-            <p className="text-gray-400 mb-7 leading-relaxed">
-              Experience real interview scenarios with industry professionals
-              and get actionable feedback.
-            </p>
+            <div className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gray-100 text-gray-800 font-bold text-lg group-hover:bg-gray-200 transition-colors">
+              Start Practice
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </motion.div>
 
-            <span className="inline-flex items-center gap-2 font-semibold text-indigo-400 group-hover:text-indigo-300 transition">
-              Start Real Interview <ArrowRight className="w-5 h-5" />
-            </span>
-          </div>
-
-          {/* AI Interview */}
-          <div
+          {/* AI Interview Mode */}
+          <motion.div
+            className="group relative p-8 md:p-10 rounded-[2rem] bg-white border-2 border-blue-500 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 flex flex-col justify-between cursor-pointer"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            whileHover={{ y: -8 }}
             onClick={() => navigate("/ai-interview")}
-            className="p-8 rounded-2xl border border-gray-800 bg-linear-to-b from-[#0B1220] to-[#070B14]
-            group cursor-pointer shadow-lg hover:shadow-2xl transition duration-300
-            hover:border-indigo-500/60 hover:-translate-y-1 relative overflow-hidden"
           >
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-indigo-500/10" />
-
-            <span className="absolute top-4 right-4 bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold px-3 py-1 rounded-full">
-              Recommended
-            </span>
-
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-indigo-500/10 border border-indigo-500/20 mx-auto mb-6">
-              <Bot className="w-7 h-7 text-indigo-400" />
+            {/* Recommended Badge */}
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold uppercase tracking-wider rounded-full shadow-md z-10">
+              Most Popular
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-200 mb-3">
-              AI Interview
-            </h2>
-            <p className="text-gray-400 mb-7 leading-relaxed">
-              Practice unlimited mock interviews with AI — available 24/7 and
-              tailored to your role.
-            </p>
+            <div>
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                <Bot className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-3xl font-bold mb-4">
+                AI-Powered Interview
+              </h3>
+              <p className="text-gray-600 mb-8 leading-relaxed text-lg">
+                Experience a dynamic interview where our advanced AI adapts questions and evaluates you in real-time.
+              </p>
 
-            <span className="inline-flex items-center gap-2 font-semibold text-indigo-400 group-hover:text-indigo-300 transition">
-              Start AI Interview <ArrowRight className="w-5 h-5" />
-            </span>
-          </div>
+              <div className="space-y-4 mb-10">
+                {["Adaptive AI questioning", "Voice & text response capabilities", "Instant, detailed performance feedback"].map((feature, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-blue-500 flex-shrink-0" />
+                    <span className="text-gray-700 font-medium">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg group-hover:bg-blue-700 transition-colors">
+              Start AI Interview
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </div>

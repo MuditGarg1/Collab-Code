@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const cookieOptions = {
   httpOnly: true,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  sameSite: "strict",
+  sameSite: "lax",
   secure: process.env.NODE_ENV === "production"
 };
 
@@ -23,7 +23,7 @@ export const register = async (req, res) => {
   const tempToken = jwt.sign(
     { name, email, password, role, otp },
     process.env.JWT_SECRET,
-    { expiresIn: "60m" }
+    { expiresIn: "10m" }
   );
   // console.log(otp);
 
@@ -40,7 +40,7 @@ export const register = async (req, res) => {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "development"
+      secure: process.env.NODE_ENV === "production"
     })
     .status(200)
     .json({ message: "OTP sent to email. Please verify." });
@@ -81,7 +81,9 @@ export const verifyRegisterOtp = async (req, res, next) => {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
+          credits: user.credits,
+          isVerified: user.isVerified
         }
       });
   } catch (error) {
@@ -122,7 +124,9 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        credits: user.credits,
+        isVerified: user.isVerified
       }
     });
 };
@@ -183,7 +187,7 @@ export const verifyForgotOtpAndResetPassword = async (req, res) => {
 
 export const logout = (req, res) => {
   res
-    .clearCookie("token")
+    .clearCookie("token", cookieOptions)
     .status(200)
     .json({ message: "Logged out successfully" });
 };

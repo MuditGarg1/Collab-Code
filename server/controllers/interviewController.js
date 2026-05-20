@@ -42,9 +42,13 @@ export const joinRoom = async (req, res) => {
       return res.status(401).json({ error: "Wrong password" });
     if (room.status === "ended")
       return res.status(400).json({ error: "Room ended" });
-    if (room.intervieweeId && room.intervieweeId.toString() !== intervieweeId.toString())
-      return res.status(409).json({ error: "Interviewee already joined" });
 
+    // If someone else already claimed the interviewee slot, reject
+    if (room.intervieweeId && room.intervieweeId.toString() !== intervieweeId.toString()) {
+      return res.status(409).json({ error: "Another candidate has already joined this room" });
+    }
+
+    // Idempotent: allow same user to re-join
     if (!room.intervieweeId) {
       room.intervieweeId = intervieweeId;
     }
@@ -80,12 +84,24 @@ export const verifyRoomAccess = async (req, res) => {
     }
 
     if (role === "client") {
-      if (!room.intervieweeId) {
-        return res.status(403).json({ error: "Client not joined yet" });
+      // Block the interviewer from also joining as a client (in production).
+      // In dev/testing with same account, we allow it.
+      if (room.intervieweeId) {
+        // Slot is already taken — only allow the same user back in
+        if (room.intervieweeId.toString() !== userId.toString()) {
+          return res.status(403).json({ error: "Another candidate has already joined this room" });
+        }
+        return res.json({ allowed: true });
       }
-      if (room.intervieweeId.toString() !== userId.toString()) {
-        return res.status(403).json({ error: "Not authorized as client" });
+
+      // No interviewee yet — auto-register this user as the interviewee
+      // (handles cases where they navigate directly via URL or use a different browser)
+      room.intervieweeId = userId;
+      if (room.status !== "active") {
+        room.status = "active";
+        room.startedAt = room.startedAt || new Date();
       }
+      await room.save();
       return res.json({ allowed: true });
     }
 

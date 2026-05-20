@@ -23,7 +23,7 @@ const ResetPassword = () => {
         otp: state.otp,
         newPassword: password
       });
-      navigate("/auth");
+      navigate("/login");
     } catch {
       setError("OTP invalid or expired");
     }
@@ -35,13 +35,13 @@ const ResetPassword = () => {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="w-full max-w-md bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
+        className="w-full max-w-md bg-transparent/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
       >
-        <h2 className="text-2xl font-semibold text-white text-center">
+        <h2 className="text-2xl font-semibold text-gray-900 text-center">
           Reset Password
         </h2>
 
-        <p className="text-sm text-gray-400 text-center mt-2">
+        <p className="text-sm text-gray-600 text-center mt-2">
           Create a new password for your account
         </p>
 
@@ -55,10 +55,10 @@ const ResetPassword = () => {
               setPassword(e.target.value);
             }}
             required
-            className="w-full rounded-lg bg-black border border-white/15 px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full rounded-lg bg-transparent border border-white/15 px-4 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
           />
 
-          <button className="w-full rounded-lg py-2 font-medium bg-blue-600 hover:bg-blue-500 text-white transition">
+          <button className="w-full rounded-lg py-2 font-medium bg-blue-600 hover:bg-blue-500 text-gray-900 transition">
             Reset Password
           </button>
 

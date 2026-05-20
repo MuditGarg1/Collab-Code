@@ -1,13 +1,23 @@
 export const createPeerConnection = (socket, roomId, setRemoteStream) => {
   const pc = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" },
+      { urls: "stun:stun2.l.google.com:19302" },
+      { urls: "stun:stun3.l.google.com:19302" },
+      { urls: "stun:stun4.l.google.com:19302" },
+    ]
   })
 
   pc.onicecandidate = e => {
     if (e.candidate) socket.emit("ice", { roomId, candidate: e.candidate })
   }
 
-  pc.ontrack = e => setRemoteStream(e.streams[0])
+  pc.ontrack = e => {
+    if (e.streams && e.streams[0]) {
+      setRemoteStream(e.streams[0])
+    }
+  }
 
   return pc
 }
@@ -23,9 +33,23 @@ export const createOffer = async (pc, socket, roomId) => {
   socket.emit("offer", { roomId, offer: pc.localDescription })
 }
 
+const processIceQueue = async (pc) => {
+  if (pc.pendingIceCandidates && pc.pendingIceCandidates.length > 0) {
+    for (const c of pc.pendingIceCandidates) {
+      try {
+        await pc.addIceCandidate(new RTCIceCandidate(c))
+      } catch (err) {
+        console.error("Error adding queued ICE candidate", err)
+      }
+    }
+    pc.pendingIceCandidates = []
+  }
+}
+
 export const handleOffer = async (pc, offer, socket, roomId) => {
   if (!pc) return
   await pc.setRemoteDescription(new RTCSessionDescription(offer))
+  await processIceQueue(pc)
   const answer = await pc.createAnswer()
   await pc.setLocalDescription(answer)
   socket.emit("answer", { roomId, answer: pc.localDescription })
@@ -34,11 +58,21 @@ export const handleOffer = async (pc, offer, socket, roomId) => {
 export const handleAnswer = async (pc, answer) => {
   if (!pc) return
   await pc.setRemoteDescription(new RTCSessionDescription(answer))
+  await processIceQueue(pc)
 }
 
 export const addIce = async (pc, candidate) => {
   if (!pc || !candidate) return
-  await pc.addIceCandidate(new RTCIceCandidate(candidate))
+  if (pc.remoteDescription && pc.remoteDescription.type) {
+    try {
+      await pc.addIceCandidate(new RTCIceCandidate(candidate))
+    } catch (err) {
+      console.error("Error adding ICE candidate", err)
+    }
+  } else {
+    pc.pendingIceCandidates = pc.pendingIceCandidates || []
+    pc.pendingIceCandidates.push(candidate)
+  }
 }
 
 export const replaceVideoTrack = async (pc) => {

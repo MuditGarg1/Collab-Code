@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FaPaperPlane, FaTimes, FaCircle } from "react-icons/fa";
+import { FaPaperPlane, FaTimes } from "react-icons/fa";
+import { MessageSquareText } from "lucide-react";
 
 export default function ChatRoom({
   socket,
@@ -93,20 +94,28 @@ export default function ChatRoom({
   };
 
   return (
-    <aside className="h-full w-full flex flex-col rounded-2xl border border-indigo-500/20 bg-linear-to-b from-slate-900/50 to-black/60 shadow-2xl overflow-hidden">
+    <aside className="h-full w-full flex flex-col bg-gray-900">
+      
       {/* Header */}
-      <div className="px-4 py-3 border-b border-indigo-500/20 flex items-center justify-between bg-linear-to-r from-slate-900/80 to-black/50">
-        <div className="flex items-center gap-2">
-          <FaCircle className="text-green-400 text-[6px]" />
-          <span className="font-semibold text-sm tracking-wide text-white">
-            Live Chat
-          </span>
+      <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/80 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm border border-indigo-500/30">
+            <MessageSquareText size={16} />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-gray-100 tracking-wide">
+              Live Chat
+            </span>
+            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
+              Team Room
+            </span>
+          </div>
         </div>
 
         {onClose && (
           <button
             onClick={onClose}
-            className="h-8 w-8 grid place-items-center rounded-lg hover:bg-red-500/20 transition text-gray-400 hover:text-red-400"
+            className="w-8 h-8 grid place-items-center rounded-lg bg-gray-800 border border-gray-700 text-gray-400 hover:text-red-400 hover:bg-red-500/20 hover:border-red-500/30 shadow-sm transition-all"
             title="Close chat"
           >
             <FaTimes size={14} />
@@ -118,11 +127,12 @@ export default function ChatRoom({
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-3 py-4 space-y-3"
+        className="flex-1 overflow-y-auto px-6 py-6 space-y-4 bg-gray-900"
       >
         {messages.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
-            <p className="text-gray-500 text-sm">No messages yet. Start a conversation!</p>
+          <div className="h-full flex flex-col items-center justify-center gap-3 text-gray-600">
+            <MessageSquareText size={48} className="opacity-20" />
+            <p className="text-sm font-medium text-gray-500">No messages yet. Say hello!</p>
           </div>
         ) : (
           messages.map((m, i) => {
@@ -134,22 +144,22 @@ export default function ChatRoom({
                 className={`flex ${self ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm border shadow-md ${
+                  className={`max-w-[85%] rounded-[1.25rem] px-4 py-3 text-[15px] shadow-sm ${
                     self
-                      ? "bg-linear-to-r from-indigo-600/80 to-indigo-500/60 border-indigo-400/30"
-                      : "bg-slate-800/50 border-slate-700/50"
+                      ? "bg-indigo-600 text-white rounded-tr-sm"
+                      : "bg-gray-800 text-gray-200 rounded-tl-sm border border-gray-700"
                   }`}
                 >
-                  <div className={`text-[10px] opacity-60 mb-1 uppercase tracking-wider ${
-                    self ? "text-indigo-200" : "text-gray-300"
-                  }`}>
-                    {m.sender}
-                  </div>
-                  <div className="wrap-break-word leading-relaxed text-white">
+                  {!self && (
+                    <div className="text-[11px] font-bold text-gray-400 mb-1 tracking-wide">
+                      {m.sender}
+                    </div>
+                  )}
+                  <div className="wrap-break-word leading-relaxed">
                     {m.msg}
                   </div>
-                  <div className={`text-[9px] opacity-50 mt-1 text-right ${
-                    self ? "text-indigo-100" : "text-gray-400"
+                  <div className={`text-[10px] font-medium mt-2 text-right ${
+                    self ? "text-indigo-200" : "text-gray-500"
                   }`}>
                     {m.ts}
                   </div>
@@ -161,23 +171,23 @@ export default function ChatRoom({
       </div>
 
       {/* Input Area */}
-      <div className="p-3 border-t border-indigo-500/20 bg-linear-to-r from-slate-900/50 to-black/50 backdrop-blur">
-        <div className="flex items-center gap-2 bg-slate-800/40 rounded-xl px-3 border border-slate-700/50 hover:border-indigo-500/30 transition">
+      <div className="p-4 border-t border-gray-800 bg-gray-900/80 backdrop-blur-md">
+        <div className="flex items-center gap-3 bg-[#1e1e1e] rounded-2xl px-2 py-2 border border-gray-700 shadow-sm focus-within:border-indigo-500/50 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
           <input
             value={msg}
             onChange={handleInputChange}
             placeholder="Type a message..."
-            className="flex-1 bg-transparent text-sm px-1 py-3 outline-none placeholder:text-gray-500 text-white"
+            className="flex-1 bg-transparent text-[15px] px-3 outline-none placeholder:text-gray-500 text-gray-200 font-medium"
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), send())}
           />
 
           <button
             onClick={send}
             disabled={!msg.trim()}
-            className="p-2 rounded-lg bg-linear-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-white shadow-md shadow-indigo-900/50"
             title="Send message"
           >
-            <FaPaperPlane size={14} className="text-white" />
+            <FaPaperPlane size={14} className="ml-[-2px]" />
           </button>
         </div>
       </div>

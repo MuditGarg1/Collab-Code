@@ -25,6 +25,7 @@ router.get("/me", protect, (req, res) => {
       name: req.user.name,
       email: req.user.email,
       role: req.user.role,
+      credits: req.user.credits,
       isVerified: req.user.isVerified
     }
   });

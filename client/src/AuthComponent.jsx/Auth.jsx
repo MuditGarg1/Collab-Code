@@ -1,12 +1,13 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { AuthContext } from "../context/AuthContext";
 import { loginUser, registerUser } from "../services/authServices";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { refetchUser } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
@@ -28,12 +29,12 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        await loginUser({ email: form.email, password: form.password });
-        await refetchUser();
+        const { data } = await loginUser({ email: form.email, password: form.password });
+        dispatch(setUserData(data.user));
         navigate("/");
       } else {
         await registerUser(form);
-        navigate("/verify-otp", {
+        navigate("/login/verify-otp", {
           state: { type: "register", email: form.email }
         });
       }
@@ -46,7 +47,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen bg-transparent flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -55,12 +56,12 @@ const Auth = () => {
                    bg-white/5 backdrop-blur-xl 
                    border border-white/10 
                    shadow-[0_0_40px_rgba(79,70,229,0.25)]
-                   p-6 text-white"
+                   p-6 text-gray-900"
       >
         <h2 className="text-3xl font-semibold text-center">
           {isLogin ? "Welcome Back 👋" : "Create Account ✨"}
         </h2>
-        <p className="text-gray-400 text-center mt-1 mb-5">
+        <p className="text-gray-600 text-center mt-1 mb-5">
           {isLogin ? "Sign in to continue" : "Sign up to get started"}
         </p>
 
@@ -122,17 +123,17 @@ const Auth = () => {
 
         {isLogin && (
           <p
-            className="text-sm text-indigo-400 text-center mt-4 cursor-pointer"
-            onClick={() => navigate("/forgot-password")}
+            className="text-sm text-indigo-600 text-center mt-4 cursor-pointer"
+            onClick={() => navigate("/login/forgot-password")}
           >
             Forgot password?
           </p>
         )}
 
-        <p className="text-sm text-center mt-4 text-gray-400">
+        <p className="text-sm text-center mt-4 text-gray-600">
           {isLogin ? "Don’t have an account?" : "Already have an account?"}{" "}
           <span
-            className="text-indigo-400 cursor-pointer"
+            className="text-indigo-600 cursor-pointer"
             onClick={() => {
               setError("");
               setIsLogin(!isLogin);

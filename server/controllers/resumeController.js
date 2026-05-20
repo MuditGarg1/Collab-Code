@@ -1,5 +1,4 @@
 import pdf from "pdf-parse";
-
 export const parseResume = async (req,res)=>{
 
     try{

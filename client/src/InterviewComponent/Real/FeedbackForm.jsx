@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Send } from "lucide-react";
 import axios from "../../utils/axios";
+import { toast } from "react-toastify";
 
 export default function FeedbackForm({ roomId, intervieweeEmail, onClose, onSubmitSuccess }) {
   const [loading, setLoading] = useState(false);
@@ -50,11 +51,11 @@ export default function FeedbackForm({ roomId, intervieweeEmail, onClose, onSubm
         onSubmitSuccess();
       }
       
-      alert("Feedback submitted successfully!");
+      toast.success("Feedback submitted successfully!");
       onClose();
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      alert(error.response?.data?.error || "Failed to submit feedback");
+      toast.error(error.response?.data?.error || "Failed to submit feedback");
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ export default function FeedbackForm({ roomId, intervieweeEmail, onClose, onSubm
   const overallScore = ((formData.technicalScore + formData.communicationScore + formData.confidenceScore) / 3).toFixed(1);
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-start justify-center pt-24 z-99999 p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-transparent/70 flex items-start justify-center pt-24 z-99999 p-4 overflow-y-auto">
       <div className="bg-white rounded-xl w-full max-w-2xl my-8 shadow-2xl">
         
         {/* Header */}
@@ -230,7 +231,7 @@ export default function FeedbackForm({ roomId, intervieweeEmail, onClose, onSubm
             <button
               type="submit"
               disabled={loading || !formData.notes.trim()}
-              className="flex-1 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

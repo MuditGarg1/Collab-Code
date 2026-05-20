@@ -10,9 +10,10 @@ export default function MeetingEndedModal({
   if (!isOpen) return null;
 
   const isInterviewer = role === "interviewer" || role === "host";
+  const canProvideFeedback = isInterviewer && otherUserEmail;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-start justify-center pt-24 z-99999 p-4">
+    <div className="fixed inset-0 bg-transparent/70 flex items-start justify-center pt-24 z-99999 p-4">
       <div className="bg-white rounded-xl max-w-md w-full shadow-2xl overflow-hidden">
         
         {/* Header with Icon */}
@@ -30,11 +31,11 @@ export default function MeetingEndedModal({
           {/* User Info */}
           <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-2">Interview with</p>
-            <p className="text-lg font-semibold text-gray-900">{otherUserEmail || "Unknown User"}</p>
+            <p className="text-lg font-semibold text-gray-900">{otherUserEmail || "No candidate joined"}</p>
           </div>
 
           {/* Next Steps Message */}
-          {isInterviewer && (
+          {canProvideFeedback && (
             <div className="bg-blue-50 border border-blue-300 rounded-lg p-4">
               <div className="flex gap-3">
                 <FileText className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
@@ -48,10 +49,10 @@ export default function MeetingEndedModal({
 
           {/* Buttons */}
           <div className="space-y-3 pt-2">
-            {isInterviewer && (
+            {canProvideFeedback && (
               <button
                 onClick={onOpenFeedback}
-                className="w-full px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-white flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 transition font-semibold text-gray-900 flex items-center justify-center gap-2"
               >
                 <FileText size={18} />
                 Write Feedback

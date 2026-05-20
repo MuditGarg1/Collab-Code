@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLock, FiVideo, FiUsers } from "react-icons/fi";
 import api from "../../utils/axios";
+import { toast } from "react-toastify";
 
 export default function InterviewEntry() {
   const navigate = useNavigate();
@@ -57,12 +58,14 @@ export default function InterviewEntry() {
         navigate(`/real/client/${meetingId}`);
       }
     } catch (err) {
-      setError("Server error. Try again.");
+      const msg = err?.response?.data?.error || "Server error. Please try again.";
+      setError(msg);
+      toast.error(msg);
     }
   };
 
   return (
-    <div className="min-h-screen text-white px-6 flex items-center justify-center">
+    <div className="min-h-screen text-gray-900 px-6 flex items-center justify-center">
       <div className="w-full max-w-5xl grid md:grid-cols-2 gap-16 items-center">
         
         {/* LEFT CONTENT */}
@@ -71,7 +74,7 @@ export default function InterviewEntry() {
             A Better Way to Conduct Interviews
           </h1>
 
-          <p className="text-gray-400 text-lg mb-10">
+          <p className="text-gray-600 text-lg mb-10">
             Secure, distraction-free interview sessions designed for real
             conversations and accurate evaluations.
           </p>
@@ -81,7 +84,7 @@ export default function InterviewEntry() {
               <FiVideo className="text-indigo-500 text-xl mt-1" />
               <div>
                 <h3 className="font-semibold">Live Interview Sessions</h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-sm">
                   High-quality real-time interview experience for interviewers and
                   interviewees.
                 </p>
@@ -92,7 +95,7 @@ export default function InterviewEntry() {
               <FiLock className="text-indigo-500 text-xl mt-1" />
               <div>
                 <h3 className="font-semibold">Secure Access</h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-sm">
                   Password-protected meetings ensure only invited users can
                   join.
                 </p>
@@ -103,7 +106,7 @@ export default function InterviewEntry() {
               <FiUsers className="text-indigo-500 text-xl mt-1" />
               <div>
                 <h3 className="font-semibold">Role-Based Entry</h3>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-sm">
                   Interviewers control the interview. Interviewees join with credentials.
                 </p>
               </div>
@@ -115,7 +118,7 @@ export default function InterviewEntry() {
         <div className="animate-slideUp">
           <div className="rounded-2xl border border-gray-800 p-10 backdrop-blur-sm">
             <h2 className="text-2xl font-bold mb-2">Get Started</h2>
-            <p className="text-gray-400 mb-8 text-sm">
+            <p className="text-gray-600 mb-8 text-sm">
               Choose how you want to enter the interview session
             </p>
 

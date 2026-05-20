@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { ChevronDown, Download, Trash2 } from "lucide-react";
+import { ChevronDown, Download, Trash2, Code2, Save } from "lucide-react";
 
 const SUPPORTED_LANGUAGES = [
   { name: "JavaScript", value: "javascript" },
@@ -20,6 +20,7 @@ export default function CodeEditor({ socket, roomId, role }) {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("cpp");
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [saving, setSaving] = useState(false);
   const ignoreUpdateRef = useRef(false);
   const debounceTimerRef = useRef(null);
 
@@ -74,6 +75,10 @@ export default function CodeEditor({ socket, roomId, role }) {
     
     // Save to localStorage immediately
     localStorage.setItem(storageKey, newCode);
+    
+    if (!isInterviewer) {
+      setSaving(true);
+    }
 
     if (ignoreUpdateRef.current) return;
 
@@ -85,7 +90,8 @@ export default function CodeEditor({ socket, roomId, role }) {
     if (!isInterviewer) {
       debounceTimerRef.current = setTimeout(() => {
         socket.emit("code-change", { roomId, code: newCode });
-      }, 300);
+        setSaving(false);
+      }, 500);
     }
   };
 
@@ -125,68 +131,81 @@ export default function CodeEditor({ socket, roomId, role }) {
     if (confirm("Are you sure you want to clear all code?")) {
       setCode("");
       localStorage.removeItem(storageKey);
+      if (!isInterviewer) {
+        socket.emit("code-change", { roomId, code: "" });
+      }
     }
   };
 
   return (
-    <div className="h-full w-full rounded-2xl overflow-hidden border border-indigo-500/20 bg-linear-to-br from-slate-900/50 to-black/60 shadow-2xl flex flex-col">
+    <div className="h-full w-full flex flex-col bg-[#111827]">
+      
       {/* Header */}
-      <div className="px-4 py-3 border-b border-indigo-500/20 bg-linear-to-r from-slate-900/80 to-black/50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/80 backdrop-blur-md relative z-20">
+        
+        <div className="flex items-center gap-4">
+          <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm border border-indigo-500/30">
+            <Code2 size={16} />
+          </div>
+
+          <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] uppercase tracking-[0.15em] text-gray-400 font-semibold">
-                Editor
-              </span>
-              <span className="text-[12px] bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-full">
-                {isInterviewer ? "📋 READ ONLY" : "✏️ LIVE"}
+              <span className="font-bold text-gray-100 tracking-wide">Editor</span>
+              <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full border shadow-sm ${
+                isInterviewer 
+                  ? "bg-amber-500/20 text-amber-400 border-amber-500/30" 
+                  : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+              }`}>
+                {isInterviewer ? "Read Only" : "Live"}
               </span>
             </div>
+          </div>
+        </div>
 
-            {/* Language Selector */}
-            <div className="relative">
-              <button
-                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                className="flex items-center gap-2 px-3 py-1.5 text-[12px] font-medium bg-slate-800/60 border border-slate-700/50 rounded-lg hover:bg-slate-700/60 transition text-gray-200"
-              >
-                {SUPPORTED_LANGUAGES.find(l => l.value === language)?.name || "Language"}
-                <ChevronDown size={14} />
-              </button>
+        <div className="flex items-center gap-3">
+          {/* Language Selector */}
+          <div className="relative">
+            <button
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-gray-800 border border-gray-700 shadow-sm rounded-xl hover:border-indigo-500/50 hover:text-indigo-400 transition-colors text-gray-300"
+            >
+              {SUPPORTED_LANGUAGES.find(l => l.value === language)?.name || "Language"}
+              <ChevronDown size={14} className="text-gray-500" />
+            </button>
 
-              {showLanguageDropdown && (
-                <div className="absolute top-full mt-1 left-0 w-32 bg-slate-900/95 border border-slate-700/60 rounded-lg z-50 shadow-xl backdrop-blur">
-                  {SUPPORTED_LANGUAGES.map(lang => (
-                    <button
-                      key={lang.value}
-                      onClick={() => handleLanguageChange(lang.value)}
-                      className={`w-full text-left px-3 py-2 text-sm transition hover:bg-indigo-500/20 ${
-                        language === lang.value
-                          ? "bg-indigo-500/30 text-indigo-300 font-semibold"
-                          : "text-gray-300"
-                      }`}
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {showLanguageDropdown && (
+              <div className="absolute top-full mt-2 right-0 w-40 bg-gray-800 border border-gray-700 rounded-xl z-50 shadow-2xl overflow-hidden py-1">
+                {SUPPORTED_LANGUAGES.map(lang => (
+                  <button
+                    key={lang.value}
+                    onClick={() => handleLanguageChange(lang.value)}
+                    className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
+                      language === lang.value
+                        ? "bg-indigo-500/20 text-indigo-400"
+                        : "text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                    }`}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
           {!isInterviewer && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 border-l border-gray-700 pl-3">
               <button
                 onClick={downloadCode}
                 title="Download code"
-                className="p-1.5 text-gray-400 hover:text-indigo-400 hover:bg-slate-800/50 rounded-lg transition"
+                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/20 border border-transparent hover:border-indigo-500/30 rounded-lg transition-all"
               >
                 <Download size={16} />
               </button>
               <button
                 onClick={clearCode}
                 title="Clear code"
-                className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-slate-800/50 rounded-lg transition"
+                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-red-500/20 border border-transparent hover:border-red-500/30 rounded-lg transition-all"
               >
                 <Trash2 size={16} />
               </button>
@@ -196,7 +215,7 @@ export default function CodeEditor({ socket, roomId, role }) {
       </div>
 
       {/* Editor */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 relative bg-[#1e1e1e] z-0">
         <Editor
           height="100%"
           language={language}
@@ -204,26 +223,41 @@ export default function CodeEditor({ socket, roomId, role }) {
           value={code}
           onChange={handleChange}
           options={{
-            fontSize: 13,
+            fontSize: 14,
             fontFamily: "'Fira Code', 'Courier New', monospace",
-            minimap: { enabled: true, scale: 2 },
+            minimap: { enabled: false }, // Disabled minimap for a cleaner look
             readOnly: isInterviewer,
             wordWrap: "on",
             automaticLayout: true,
             scrollBeyondLastLine: false,
             lineNumbers: "on",
+            renderLineHighlight: "all",
+            smoothScrolling: true,
+            padding: { top: 16, bottom: 16 },
             bracketPairColorization: {
               enabled: true,
             },
-            "bracketPairColorization.independentColorPoolPerBracketType": true,
           }}
         />
       </div>
 
-      {/* Footer - Line Count & Status */}
-      <div className="px-4 py-2 border-t border-indigo-500/20 bg-black/30 text-[11px] text-gray-500 flex items-center justify-between">
-        <span>Lines: {code.split("\n").length} | Characters: {code.length}</span>
-        {!isInterviewer && <span className="text-indigo-400">● Auto-saving</span>}
+      {/* Footer - Status */}
+      <div className="px-6 py-2.5 border-t border-gray-800 bg-gray-900/80 backdrop-blur-md flex items-center justify-between text-xs font-medium text-gray-500">
+        <div className="flex items-center gap-4">
+          <span>Ln {code.split("\n").length}, Col {code.length}</span>
+          <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+          <span>UTF-8</span>
+        </div>
+        
+        {!isInterviewer && (
+          <div className="flex items-center gap-2">
+            {saving ? (
+              <span className="text-amber-500 flex items-center gap-1.5"><Save size={12} /> Saving...</span>
+            ) : (
+              <span className="text-emerald-500 flex items-center gap-1.5"><Save size={12} /> Saved</span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

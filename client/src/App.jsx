@@ -1,63 +1,133 @@
-import { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { setUserData } from "./redux/userSlice";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import { AuthContext } from "./context/AuthContext";
 import AboutUs from "./components/AboutUs";
 import Interview from "./pages/Interview";
-import Codes from "./pages/Codes";
-import Auth from "./AuthComponent.jsx/Auth";
-import OtpVerify from "./AuthComponent.jsx/OtpVerify";
-import ResetPassword from "./AuthComponent.jsx/ResetPassword";
-import ForgotPassword from "./AuthComponent.jsx/ForgotPassword";
-import Footer from "./components/footer";
-import Features from "./HomeComponents/Features";
+import InterviewPage from "./pages/InterviewPage";
+import Pricing from "./pages/Pricing";
+import InterviewHistory from "./pages/InterviewHistory";
+import InterviewReport from "./pages/InterviewReport";
 import InterviewEntry from "./InterviewComponent/Real/InterviewEntry";
 import Host from "./InterviewComponent/Real/Host";
 import Client from "./InterviewComponent/Real/Client";
-import AIInterviewSetup from "./InterviewComponent/AI/AIInterviewSetup";
-import AIInterviewPage from "./InterviewComponent/AI/AIInterviewPage";
-// import UploadResume from "./pages/UploadResume";
+import PAuth from "./pages/PAuth";
+import { getMe } from "./services/authServices";
+
+export const ServerUrl = "http://localhost:4000";
 
 function App() {
-  const { isLoggedin, loading } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
-  if (loading) {
-    return <div>Loading...</div>;
+  const userData = useSelector((state) => state.user.userData);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const result = await getMe();
+
+        dispatch(setUserData(result.data.user));
+      } catch (error) {
+        console.log(error);
+        dispatch(setUserData(null));
+      } finally {
+        setAuthChecked(true);
+      }
+    };
+
+    getUser();
+  }, [dispatch]);
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-transparent text-gray-900">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col text-white bg-linear-to-b from-black  to-black overflow-x-hidden">
-      
-      
+    <div className="min-h-screen flex flex-col text-gray-900 bg-transparent overflow-x-hidden">
+
       <div className="fixed inset-0 pointer-events-none z-10">
-        <div className="absolute top-24 left-24 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-24 right-24 w-65 h-72 bg-indigo-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-24 left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-24 right-24 w-65 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
       </div>
 
       <Navbar />
-
-      
       <main className="relative z-20 flex-1 pt-20">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/verify-otp" element={<OtpVerify />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/dashboard" element={!isLoggedin ? <Auth /> : <Dashboard />} />
+
+          <Route path="/auth/*" element={<Navigate to="/login" replace />} />
+
+          <Route
+            path="/login/*"
+            element={
+              userData ? <Navigate to="/" /> : <PAuth />
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              userData ? <Dashboard /> : <Navigate to="/login" />
+            }
+          />
+
           <Route path="/interview" element={<Interview />} />
-          <Route path="/code" element={<Codes />} />
+          <Route path="/code" element={<Navigate to="/interview-entry" replace />} />
+          <Route path="/settings" element={<Navigate to={userData ? "/dashboard" : "/login"} replace />} />
+          <Route
+            path="/ai-interview"
+            element={
+              userData ? (
+                <InterviewPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route path="/pricing" element={<Pricing />} />
+
+          <Route
+            path="/history"
+            element={
+              userData ? (
+                <InterviewHistory />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          <Route
+            path="/report/:id"
+            element={
+              userData ? (
+                <InterviewReport />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
           <Route path="/real/host/:roomId" element={<Host />} />
           <Route path="/real/client/:roomId" element={<Client />} />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/interview-entry" element={<InterviewEntry />} />
-          <Route path="/ai-interview" element={<AIInterviewSetup />} />
-          <Route path="/ai-interview/session" element={<AIInterviewPage />} />
 
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/about-us" element={<AboutUs />} />
+
+          <Route path="/interview-entry" element={<InterviewEntry />} />
         </Routes>
       </main>
+
       <Footer />
     </div>
   );

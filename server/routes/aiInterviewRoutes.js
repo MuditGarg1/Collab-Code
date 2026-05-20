@@ -1,21 +1,22 @@
 import express from "express";
-import multer from "multer";
-import { parseResume } from "../controllers/aiInterviewController.js";
+import { upload } from "../middleware/multer.js";
+import {
+  analyzeResume,
+  finishInterview,
+  generateQuestion,
+  getInterviewReport,
+  getMyInterviews,
+  submitAnswer,
+} from "../controllers/ai.interview.cotroller.js";
+import { protect } from "../middleware/userAUTH.js";
 
 const router = express.Router();
 
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype !== "application/pdf") {
-      return cb(new Error("Only PDF files are allowed"));
-    }
-    cb(null, true);
-  },
-});
-
-router.post("/upload", upload.single("resume"), parseResume);
+router.post("/resume", protect, upload.single("resume"), analyzeResume);
+router.post("/generate-questions", protect, generateQuestion);
+router.post("/submit-answer", protect, submitAnswer);
+router.post("/finish", protect, finishInterview);
+router.get("/history", protect, getMyInterviews);
+router.get("/history/:id", protect, getInterviewReport);
 
 export default router;

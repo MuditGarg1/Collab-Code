@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
     try {
       await forgot({ email });
-      navigate("/verify-otp", { state: { type: "forgot", email } });
+      navigate("/login/verify-otp", { state: { type: "forgot", email } });
     } catch (err) {
       setError(err?.response?.data?.message || "Email not found");
     } finally {
@@ -30,13 +30,13 @@ const ForgotPassword = () => {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="w-full max-w-md bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
+        className="w-full max-w-md bg-transparent/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
       >
-        <h2 className="text-2xl font-semibold text-white text-center">
+        <h2 className="text-2xl font-semibold text-gray-900 text-center">
           Forgot Password
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400 text-center">
+        <p className="mt-2 text-sm text-gray-600 text-center">
           Enter your registered email to receive a verification code
         </p>
 
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
 
         <form onSubmit={submitHandler} className="mt-6 space-y-4">
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
+            <label className="block text-sm text-gray-700 mb-1">
               Email address
             </label>
             <input
@@ -60,7 +60,7 @@ const ForgotPassword = () => {
                 setEmail(e.target.value);
               }}
               required
-              className="w-full rounded-lg bg-black border border-white/15 px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+              className="w-full rounded-lg bg-transparent border border-white/15 px-4 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
             />
           </div>
 
@@ -70,8 +70,8 @@ const ForgotPassword = () => {
             className={`w-full rounded-lg py-2 font-medium transition
               ${
                 loading
-                  ? "bg-white/10 text-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-500 text-white"
+                  ? "bg-white/10 text-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-500 text-gray-900"
               }`}
           >
             {loading ? "Sending OTP..." : "Send OTP"}
@@ -81,7 +81,7 @@ const ForgotPassword = () => {
         <div className="mt-5 text-center">
           <button
             onClick={() => navigate("/login")}
-            className="text-sm text-gray-400 hover:text-white transition"
+            className="text-sm text-gray-600 hover:text-gray-900 transition"
           >
             Back to Login
           </button>

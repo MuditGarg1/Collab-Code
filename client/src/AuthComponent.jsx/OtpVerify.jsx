@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { verifyRegisterOtp } from "../services/authServices";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const OtpVerify = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,10 +28,11 @@ const OtpVerify = () => {
 
     try {
       if (state.type === "register") {
-        await verifyRegisterOtp(otp);
-        navigate("/auth");
+        const { data } = await verifyRegisterOtp(otp);
+        dispatch(setUserData(data.user));
+        navigate("/dashboard");
       } else {
-        navigate("/reset-password", {
+        navigate("/login/reset-password", {
           state: { email: state.email, otp }
         });
       }
@@ -45,13 +49,13 @@ const OtpVerify = () => {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="w-full max-w-md bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
+        className="w-full max-w-md bg-transparent/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
       >
-        <h2 className="text-2xl font-semibold text-white text-center">
+        <h2 className="text-2xl font-semibold text-gray-900 text-center">
           Verify OTP
         </h2>
 
-        <p className="text-sm text-gray-400 text-center mt-2">
+        <p className="text-sm text-gray-600 text-center mt-2">
           Enter the 6-digit code sent to your email
         </p>
 
@@ -64,7 +68,7 @@ const OtpVerify = () => {
               setOtp(e.target.value);
             }}
             required
-            className="w-full rounded-lg bg-black border border-white/15 px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-center tracking-widest"
+            className="w-full rounded-lg bg-transparent border border-white/15 px-4 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-center tracking-widest"
           />
 
           <button
@@ -73,8 +77,8 @@ const OtpVerify = () => {
             className={`w-full rounded-lg py-2 font-medium transition
               ${
                 loading
-                  ? "bg-white/10 text-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-500 text-white"
+                  ? "bg-white/10 text-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-500 text-gray-900"
               }`}
           >
             {loading ? "Verifying..." : "Verify OTP"}

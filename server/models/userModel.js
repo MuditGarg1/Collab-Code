@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema(
 
     otpExpiresAt: {
       type: Date
+    },
+    credits:{
+      type:Number,
+      default:50
     }
   },
   { timestamps: true }
