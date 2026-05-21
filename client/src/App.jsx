@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { setUserData } from "./redux/userSlice";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -16,15 +16,20 @@ import InterviewEntry from "./InterviewComponent/Real/InterviewEntry";
 import Host from "./InterviewComponent/Real/Host";
 import Client from "./InterviewComponent/Real/Client";
 import PAuth from "./pages/PAuth";
+import Features from "./pages/Features";
 import { getMe } from "./services/authServices";
 
 export const ServerUrl = "http://localhost:4000";
 
 function App() {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const userData = useSelector((state) => state.user.userData);
   const [authChecked, setAuthChecked] = useState(false);
+
+  // Check if we are inside a real-time interview room
+  const isInterviewRoom = location.pathname.startsWith("/real/host") || location.pathname.startsWith("/real/client");
 
   useEffect(() => {
     const getUser = async () => {
@@ -52,15 +57,18 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col text-gray-900 bg-transparent overflow-x-hidden">
+    <div className={`flex flex-col text-gray-900 bg-transparent overflow-x-hidden ${isInterviewRoom ? "h-screen overflow-hidden" : "min-h-screen"}`}>
 
-      <div className="fixed inset-0 pointer-events-none z-10">
-        <div className="absolute top-24 left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-24 right-24 w-65 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
-      </div>
+      {!isInterviewRoom && (
+        <div className="fixed inset-0 pointer-events-none z-10">
+          <div className="absolute top-24 left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-24 right-24 w-65 h-72 bg-indigo-500/10 rounded-full blur-3xl" />
+        </div>
+      )}
 
-      <Navbar />
-      <main className="relative z-20 flex-1 pt-20">
+      {!isInterviewRoom && <Navbar />}
+      
+      <main className={`relative z-20 flex-1 ${!isInterviewRoom ? "pt-20" : "h-full flex flex-col"}`}>
         <Routes>
           <Route path="/" element={<Home />} />
 
@@ -81,7 +89,7 @@ function App() {
           />
 
           <Route path="/interview" element={<Interview />} />
-          <Route path="/code" element={<Navigate to="/interview-entry" replace />} />
+          <Route path="/features" element={<Features />} />
           <Route path="/settings" element={<Navigate to={userData ? "/dashboard" : "/login"} replace />} />
           <Route
             path="/ai-interview"
@@ -128,7 +136,7 @@ function App() {
         </Routes>
       </main>
 
-      <Footer />
+      {!isInterviewRoom && <Footer />}
     </div>
   );
 }

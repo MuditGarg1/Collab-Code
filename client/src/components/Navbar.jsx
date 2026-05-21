@@ -66,11 +66,11 @@ const Navbar = () => {
             <Link to="/" className="flex items-center gap-1.5 px-4 py-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-medium transition-colors">
               <Home className="w-4 h-4" /> Home
             </Link>
+            <Link to="/features" className="flex items-center gap-1.5 px-4 py-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+              <LayoutDashboard className="w-4 h-4" /> Features
+            </Link>
             <Link to="/interview" className="flex items-center gap-1.5 px-4 py-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-medium transition-colors">
               <Video className="w-4 h-4" /> Interview
-            </Link>
-            <Link to="/code" className="flex items-center gap-1.5 px-4 py-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-medium transition-colors">
-              <Code className="w-4 h-4" /> Code
             </Link>
             <Link to="/about" className="flex items-center gap-1.5 px-4 py-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 font-medium transition-colors">
               <Info className="w-4 h-4" /> About

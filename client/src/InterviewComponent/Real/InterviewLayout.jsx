@@ -11,17 +11,19 @@ export default function InterviewLayout({
   children
 }) {
   return (
-    <div className="relative flex h-screen text-gray-100 bg-[#0f111a] overflow-hidden font-sans">
+    <div className="relative flex h-screen text-gray-100 bg-gray-950 overflow-hidden font-sans">
       
-      {/* Subtle Background Texture */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      {/* Dynamic Background Glow */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
       {/* Main Layout Wrapper */}
       <div className="flex-1 flex flex-col md:flex-row gap-4 p-4 lg:p-6 overflow-hidden z-10">
         
         {/* Left Panel: Video Section */}
         <div className="flex-1 min-w-0 min-h-0 flex flex-col relative z-20">
-          <div className="flex-1 rounded-[2rem] bg-gray-900 border border-gray-800 shadow-xl overflow-hidden flex flex-col">
+          <div className="flex-1 rounded-[2rem] bg-gray-900/60 backdrop-blur-2xl border border-gray-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col">
             {videoComponent}
           </div>
         </div>
@@ -56,7 +58,7 @@ export default function InterviewLayout({
           {/* Code Editor Container */}
           {codeEditorOpen && (
             <div className="flex-1 min-h-0 flex flex-col relative">
-              <div className="flex-1 rounded-[2rem] bg-gray-900 border border-gray-800 shadow-xl overflow-hidden flex flex-col">
+              <div className="flex-1 rounded-[2rem] bg-gray-900/60 backdrop-blur-2xl border border-gray-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col">
                 {codeEditorComponent}
               </div>
             </div>
@@ -65,7 +67,7 @@ export default function InterviewLayout({
           {/* Chat Room Container */}
           {chatOpen && (
             <div className={`${codeEditorOpen ? 'flex-1' : 'flex-1'} min-h-0 flex flex-col relative`}>
-              <div className="flex-1 rounded-[2rem] bg-gray-900 border border-gray-800 shadow-xl overflow-hidden flex flex-col">
+              <div className="flex-1 rounded-[2rem] bg-gray-900/60 backdrop-blur-2xl border border-gray-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col">
                 {chatComponent}
               </div>
             </div>

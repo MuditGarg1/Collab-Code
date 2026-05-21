@@ -108,84 +108,94 @@ function Pricing() {
 
 
   return (
-    <div className='min-h-screen bg-linear-to-br from-gray-50 to-emerald-50 py-16 px-6'>
+    <div className='min-h-[calc(100vh-5rem)] bg-transparent py-20 px-6 relative overflow-hidden'>
+      {/* Background Ornaments */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div className='max-w-6xl mx-auto mb-14 flex items-start gap-4'>
-
-        <button onClick={() => navigate("/")} className='mt-2 p-3 rounded-full bg-white shadow hover:shadow-md transition'>
+      <div className='max-w-6xl mx-auto mb-16 flex flex-col items-center relative z-10'>
+        <button onClick={() => navigate("/")} className='absolute left-0 top-0 mt-2 p-3 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition'>
           <FaArrowLeft className='text-gray-600' />
         </button>
 
-        <div className="text-center w-full">
-          <h1 className="text-4xl font-bold text-gray-800">
-            Choose Your Plan
+        <div className="text-center w-full max-w-2xl mt-4 sm:mt-0">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+            Pricing Plans
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+            Invest in Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Future</span>
           </h1>
-          <p className="text-gray-500 mt-3 text-lg">
-            Flexible pricing to match your interview preparation goals.
+          <p className="text-gray-600 mt-4 text-lg max-w-xl mx-auto">
+            Flexible pricing to match your interview preparation goals. Unlock your full potential.
           </p>
         </div>
       </div>
 
 
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto'>
+      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10'>
 
         {plans.map((plan) => {
           const isSelected = selectedPlan === plan.id
 
           return (
             <motion.div key={plan.id}
-              whileHover={!plan.default && { scale: 1.03 }}
+              whileHover={!plan.default && { y: -8 }}
               onClick={() => !plan.default && setSelectedPlan(plan.id)}
-
-              className={`relative rounded-3xl p-8 transition-all duration-300 border 
+              className={`relative rounded-3xl p-6 transition-all duration-300 border flex flex-col bg-white
                 ${isSelected
-                  ? "border-emerald-600 shadow-2xl bg-white"
-                  : "border-gray-200 bg-white shadow-md"
+                  ? "border-emerald-200 shadow-[0_8px_40px_rgba(16,185,129,0.12)] ring-1 ring-emerald-500/20"
+                  : "border-gray-200 shadow-sm hover:border-gray-300 hover:shadow-md"
                 }
                 ${plan.default ? "cursor-default" : "cursor-pointer"}
               `}
             >
+              {isSelected && (
+                <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent rounded-3xl pointer-events-none"></div>
+              )}
 
               {/* Badge */}
               {plan.badge && (
-                <div className="absolute top-6 right-6 bg-emerald-600 text-gray-900 text-xs px-4 py-1 rounded-full shadow">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-md whitespace-nowrap">
                   {plan.badge}
                 </div>
               )}
 
               {/* Default Tag */}
               {plan.default && (
-                <div className="absolute top-6 right-6 bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full">
-                  Default
+                <div className="absolute top-5 right-5 bg-gray-100 border border-gray-200 text-gray-500 text-xs px-3 py-1 rounded-full">
+                  Current
                 </div>
               )}
 
               {/* Plan Name */}
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h3 className="text-xl font-bold text-gray-900 mt-2">
                 {plan.name}
               </h3>
 
               {/* Price */}
-              <div className="mt-4">
-                <span className="text-3xl font-bold text-emerald-600">
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-700">
                   {plan.price}
                 </span>
-                <p className="text-gray-500 mt-1">
-                  {plan.credits} Credits
-                </p>
+                <span className="text-gray-500 text-sm font-medium">/ package</span>
               </div>
+              <p className="text-emerald-600 font-semibold mt-1 text-sm">
+                {plan.credits} Credits included
+              </p>
 
               {/* Description */}
-              <p className="text-gray-500 mt-4 text-sm leading-relaxed">
+              <p className="text-gray-600 mt-4 text-sm leading-relaxed min-h-[40px]">
                 {plan.description}
               </p>
 
+              <div className="h-px w-full bg-gray-100 my-6"></div>
+
               {/* Features */}
-              <div className="mt-6 space-y-3 text-left">
+              <div className="space-y-4 text-left mb-8 flex-1">
                 {plan.features.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <FaCheckCircle className="text-emerald-500 text-sm" />
-                    <span className="text-gray-700 text-sm">
+                  <div key={i} className="flex items-start gap-3">
+                    <FaCheckCircle className="text-emerald-500 text-sm mt-0.5 shrink-0" />
+                    <span className="text-gray-700 text-sm leading-tight font-medium">
                       {feature}
                     </span>
                   </div>
@@ -193,26 +203,29 @@ function Pricing() {
               </div>
 
               {!plan.default &&
-                <button
-                disabled={loadingPlan === plan.id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!isSelected) {
-                      setSelectedPlan(plan.id)
-                    } else {
-                      handlePayment(plan)
-                    }
-                  }} className={`w-full mt-8 py-3 rounded-xl font-semibold transition ${isSelected
-                    ? "bg-emerald-600 text-gray-900 hover:opacity-90"
-                    : "bg-gray-100 text-gray-700 hover:bg-emerald-50"
-                    }`}>
-                  {loadingPlan === plan.id
-                    ? "Processing..."
-                    : isSelected
-                      ? "Proceed to Pay"
-                      : "Select Plan"}
-
-                </button>
+                <div className="mt-auto pt-4">
+                  <button
+                  disabled={loadingPlan === plan.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isSelected) {
+                        setSelectedPlan(plan.id)
+                      } else {
+                        handlePayment(plan)
+                      }
+                    }} 
+                    className={`w-full py-2.5 rounded-xl font-semibold transition-all duration-300 shadow-sm
+                      ${isSelected
+                        ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
+                      }`}>
+                    {loadingPlan === plan.id
+                      ? "Processing..."
+                      : isSelected
+                        ? "Proceed to Pay"
+                        : "Select Plan"}
+                  </button>
+                </div>
               }
             </motion.div>
           )

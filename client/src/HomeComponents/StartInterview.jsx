@@ -44,7 +44,7 @@ export default function StartInterview() {
 
           {/* Real Interview Mode */}
           <motion.div
-            className="group relative p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+            className="group relative p-6 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -73,7 +73,7 @@ export default function StartInterview() {
 
             <Link
               to="/interview"
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200 transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200 transition-colors"
             >
               Start Practice
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -82,7 +82,7 @@ export default function StartInterview() {
 
           {/* AI Interview Mode */}
           <motion.div
-            className="group relative p-8 rounded-3xl bg-white border-2 border-blue-500 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 flex flex-col justify-between"
+            className="group relative p-6 rounded-3xl bg-white border-2 border-blue-500 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 flex flex-col justify-between"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -116,7 +116,7 @@ export default function StartInterview() {
 
             <Link
               to="/ai-interview"
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
             >
               Start AI Interview
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

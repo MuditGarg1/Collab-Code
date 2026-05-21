@@ -39,7 +39,7 @@ const extendedFeedbacks = [...feedbacks, ...feedbacks];
 
 export default function Feedbacks() {
   return (
-    <section className="relative py-24 text-gray-900 overflow-hidden bg-gray-50/50">
+    <section className="relative py-24 text-gray-900  bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-6 mb-16">
 
         {/* Header */}
