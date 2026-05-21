@@ -13,6 +13,7 @@ const cookieOptions = {
 };
 
 export const register = async (req, res) => {
+  try {
   const { name, email, password, role } = req.body;
   const existingUser = await User.findOne({ email });
 
@@ -27,7 +28,7 @@ export const register = async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "10m" }
   );
-  // console.log(otp);
+  console.log("Attempting to send OTP email to:", email);
 
   await sendEmail(
     email,
@@ -35,7 +36,7 @@ export const register = async (req, res) => {
     `Your OTP is ${otp}`
   );
   
-  
+  console.log("OTP email sent successfully to:", email);
 
   res
     .cookie("tempToken", tempToken, {
@@ -46,6 +47,10 @@ export const register = async (req, res) => {
     })
     .status(200)
     .json({ message: "OTP sent to email. Please verify." });
+  } catch (err) {
+    console.error("REGISTER ERROR:", err.message, err.stack);
+    return res.status(500).json({ message: err.message || "Registration failed. Please try again." });
+  }
 };
 
 
