@@ -1,5 +1,6 @@
 import axios from "axios";
-import { ServerUrl } from "../App";
+
+const ServerUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 const api = axios.create({
   baseURL: `${ServerUrl}/api`,
