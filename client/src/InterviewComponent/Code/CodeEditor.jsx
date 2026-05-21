@@ -141,7 +141,7 @@ export default function CodeEditor({ socket, roomId, role }) {
     <div className="h-full w-full flex flex-col bg-transparent">
       
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200/60 flex items-center justify-between bg-white/80 backdrop-blur-md relative z-20">
+      <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-200/60 flex items-center justify-between bg-white/80 backdrop-blur-md relative z-20">
         
         <div className="flex items-center gap-4">
           <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
@@ -174,7 +174,7 @@ export default function CodeEditor({ socket, roomId, role }) {
             </button>
 
             {showLanguageDropdown && (
-              <div className="absolute top-full mt-2 right-0 w-40 bg-white border border-gray-200 rounded-xl z-50 shadow-xl overflow-hidden py-1">
+              <div className="absolute top-full mt-2 right-0 w-40 bg-white border border-gray-200 rounded-xl z-50 shadow-xl overflow-y-auto max-h-60 py-1">
                 {SUPPORTED_LANGUAGES.map(lang => (
                   <button
                      key={lang.value}

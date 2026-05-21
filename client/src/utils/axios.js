@@ -1,7 +1,8 @@
 import axios from "axios";
+import { ServerUrl } from "../App";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || `http://${window.location.hostname}:4000/api`,
+  baseURL: `${ServerUrl}/api`,
   withCredentials: true,
 });
 

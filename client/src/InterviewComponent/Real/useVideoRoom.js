@@ -166,6 +166,7 @@ export default function useVideoRoom(socket, roomId, role) {
         });
       } catch (err) {
         console.error("Camera/Mic access denied or device in use:", err);
+        alert("Camera and Microphone access was blocked by your mobile browser. This happens because the site is running on insecure HTTP instead of HTTPS. \n\nBecause the camera is blocked, the buttons will not work and the video connection cannot start.");
         return;
       }
 

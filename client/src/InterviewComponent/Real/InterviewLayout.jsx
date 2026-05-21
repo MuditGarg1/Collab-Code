@@ -11,7 +11,7 @@ export default function InterviewLayout({
   children
 }) {
   return (
-    <div className="relative flex h-screen text-gray-900 bg-slate-50 overflow-hidden font-sans">
+    <div className="relative flex min-h-[100dvh] md:h-screen flex-col md:flex-row text-gray-900 bg-slate-50 md:overflow-hidden overflow-y-auto font-sans">
       
       {/* Dynamic Background Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -19,7 +19,7 @@ export default function InterviewLayout({
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
       {/* Main Layout Wrapper */}
-      <div className="flex-1 flex flex-col md:flex-row gap-4 p-4 lg:p-6 overflow-hidden z-10">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 p-2 sm:p-4 lg:p-6 md:overflow-hidden overflow-visible z-10 w-full min-h-0">
         
         {/* Left Panel: Video Section */}
         <div className="flex-1 min-w-0 min-h-0 flex flex-col relative z-20">
@@ -34,7 +34,7 @@ export default function InterviewLayout({
         >
           {/* If everything is closed, show a nice compact vertical toolbar */}
           {!codeEditorOpen && !chatOpen && (
-            <div className="w-14 bg-white/80 border border-gray-200/60 shadow-lg rounded-2xl p-2 flex flex-col gap-3 items-center backdrop-blur-xl">
+            <div className="w-full md:w-14 bg-white/80 border border-gray-200/60 shadow-lg rounded-2xl p-2 flex flex-row md:flex-col gap-3 items-center justify-center backdrop-blur-xl">
               <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-2 shadow-sm border border-indigo-100">
                 <LayoutTemplate size={20} />
               </div>

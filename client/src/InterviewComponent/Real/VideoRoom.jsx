@@ -28,9 +28,27 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
   }, [meetingEndedState, onMeetingEnded]);
 
   const copyRoomId = async () => {
-    await navigator.clipboard.writeText(roomId);
-    setCopiedId(true);
-    setTimeout(() => setCopiedId(false), 2000);
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(roomId);
+      } else {
+        // Fallback for HTTP / local testing on mobile
+        const textArea = document.createElement("textarea");
+        textArea.value = roomId;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      alert("Copy failed! Please manually copy this ID: " + roomId);
+    }
   };
 
   const roleLabel =
@@ -43,10 +61,10 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
   const peerLabel = roleLabel === "Interviewer" ? "Interviewee" : "Interviewer";
 
   return (
-    <section className="flex flex-col h-full min-h-0 p-4 lg:p-6 gap-6 flex-1 bg-transparent">
+    <section className="flex flex-col h-full min-h-0 p-3 md:p-4 lg:p-6 gap-4 md:gap-6 flex-1 bg-transparent">
       
       {/* Header */}
-      <header className="flex items-center justify-between rounded-2xl px-6 py-4 border border-gray-200/60 bg-white/80 backdrop-blur-md shadow-sm">
+      <header className="flex flex-col md:flex-row md:items-center justify-between rounded-2xl px-4 md:px-6 py-3 md:py-4 border border-gray-200/60 bg-white/80 backdrop-blur-md shadow-sm gap-3 md:gap-0">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Meeting ID</span>
@@ -105,7 +123,7 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
       <div className="flex-1 min-h-0 flex flex-col gap-6">
         
         {/* Video Grid */}
-        <div className="grid grid-cols-2 gap-6 h-full min-h-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 h-full min-h-0 min-h-[500px] md:min-h-0">
           
           {/* Local Video */}
           <div className="relative rounded-[2rem] overflow-hidden border border-gray-200/60 bg-gray-100/50 shadow-sm group">
@@ -153,7 +171,7 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
         <footer className="flex justify-center gap-4 pb-2 items-center">
           
           <button
-            className={`w-12 h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
               micOn
                 ? "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-indigo-600"
                 : "bg-red-50 border-red-200 text-red-500 hover:bg-red-100"
@@ -161,11 +179,11 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
             onClick={toggleMic}
             title={micOn ? "Mute" : "Unmute"}
           >
-            {micOn ? <FaMicrophone size={18} /> : <FaMicrophoneSlash size={18} />}
+            {micOn ? <FaMicrophone size={16} /> : <FaMicrophoneSlash size={16} />}
           </button>
 
           <button
-            className={`w-12 h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
               camOn
                 ? "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-indigo-600"
                 : "bg-red-50 border-red-200 text-red-500 hover:bg-red-100"
@@ -173,11 +191,11 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
             onClick={toggleCam}
             title={camOn ? "Turn off camera" : "Turn on camera"}
           >
-            {camOn ? <FaVideo size={18} /> : <FaVideoSlash size={18} />}
+            {camOn ? <FaVideo size={16} /> : <FaVideoSlash size={16} />}
           </button>
 
           <button
-            className={`w-12 h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-full transition-all flex items-center justify-center shadow-md border ${
               sharing
                 ? "bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-indigo-100"
                 : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-indigo-600"
@@ -185,16 +203,16 @@ export default function VideoRoom({ socket, roomId, role, chatOpen, onOpenChat, 
             onClick={toggleScreen}
             title={sharing ? "Stop sharing" : "Share screen"}
           >
-            <FaDesktop size={18} />
+            <FaDesktop size={16} />
           </button>
 
           {/* End Call Button */}
           <button
-            className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 transition-all flex items-center justify-center hover:scale-105 active:scale-95 ml-2 border border-red-600/50"
+            className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 transition-all flex items-center justify-center hover:scale-105 active:scale-95 ml-2 border border-red-600/50"
             onClick={endMeeting}
             title="End meeting"
           >
-            <FaPhoneSlash size={20} />
+            <FaPhoneSlash size={18} />
           </button>
 
         </footer>
