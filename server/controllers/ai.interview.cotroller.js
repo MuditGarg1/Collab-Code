@@ -390,10 +390,51 @@ export const getMyInterviews = async (req,res) => {
   try {
     const userId = req.userId || req.user?._id;
     const interviews = await Interview.find({userId})
-    .sort({ createdAt: -1 })
-    .select("role experience mode finalScore status createdAt");
+    .sort({ createdAt: -1 });
 
-    return res.status(200).json(interviews)
+    const formattedInterviews = interviews.map((interview) => {
+      const totalQuestions = interview.questions.length;
+      let totalConfidence = 0;
+      let totalCommunication = 0;
+      let totalCorrectness = 0;
+
+      const strengths = [];
+      const weaknesses = [];
+
+      interview.questions.forEach((q) => {
+        totalConfidence += q.confidence || 0;
+        totalCommunication += q.communication || 0;
+        totalCorrectness += q.correctness || 0;
+        
+        // Simple heuristic to populate strengths/weaknesses
+        if (q.score >= 8) strengths.push(`Strong answer on question: "${q.question}"`);
+        else if (q.score > 0 && q.score <= 5) weaknesses.push(`Needs improvement on: "${q.question}"`);
+      });
+
+      const avgConfidence = totalQuestions ? totalConfidence / totalQuestions : 0;
+      const avgCommunication = totalQuestions ? totalCommunication / totalQuestions : 0;
+      const avgCorrectness = totalQuestions ? totalCorrectness / totalQuestions : 0;
+
+      const feedbacks = interview.questions.map(q => q.feedback).filter(Boolean);
+
+      return {
+        _id: interview._id,
+        role: interview.role,
+        experience: interview.experience,
+        mode: interview.mode,
+        createdAt: interview.createdAt,
+        status: interview.status,
+        overallScore: interview.finalScore,
+        technicalScore: avgCorrectness,
+        communicationScore: avgCommunication,
+        confidenceScore: avgConfidence,
+        strengths: strengths.length > 0 ? strengths : ["Consistently answered all questions"],
+        weaknesses: weaknesses.length > 0 ? weaknesses : ["No major weaknesses identified"],
+        aiFeedback: feedbacks.length > 0 ? "Detailed feedback based on your responses:\n\n" + feedbacks.join("\n\n") : "No feedback available."
+      };
+    });
+
+    return res.status(200).json(formattedInterviews)
 
   } catch (error) {
      return res.status(500).json({message:`failed to find currentUser Interview ${error}`})

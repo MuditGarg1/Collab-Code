@@ -35,7 +35,14 @@ function Step2Interview({ interviewData, onFinish }) {
 
   const currentQuestion = questions[currentIndex];
 
+  // Refs for auto-restarting speech recognition
+  const isMicOnRef = useRef(isMicOn);
+  const isAIPlayingRef = useRef(isAIPlaying);
+  const isSubmittingRef = useRef(isSubmitting);
 
+  useEffect(() => { isMicOnRef.current = isMicOn; }, [isMicOn]);
+  useEffect(() => { isAIPlayingRef.current = isAIPlaying; }, [isAIPlaying]);
+  useEffect(() => { isSubmittingRef.current = isSubmitting; }, [isSubmitting]);
   useEffect(() => {
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -215,6 +222,22 @@ function Step2Interview({ interviewData, onFinish }) {
         event.results[event.results.length - 1][0].transcript;
 
       setAnswer((prev) => prev + " " + transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.log("Speech recognition error:", event.error);
+    };
+
+    recognition.onend = () => {
+      // Auto-restart recognition if it stops (e.g. due to silence)
+      // but only if it's supposed to be listening.
+      if (isMicOnRef.current && !isAIPlayingRef.current && !isSubmittingRef.current) {
+        try {
+          recognition.start();
+        } catch (e) {
+          // ignore if already started
+        }
+      }
     };
 
     recognitionRef.current = recognition;

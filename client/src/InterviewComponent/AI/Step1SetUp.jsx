@@ -12,6 +12,7 @@ import axios from "axios"
 import { ServerUrl } from '../../App';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '../../redux/userSlice';
+import { toast } from 'react-toastify';
 function Step1SetUp({ onStart }) {
     const {userData}= useSelector((state)=>state.user)
     const dispatch = useDispatch()
@@ -50,6 +51,7 @@ function Step1SetUp({ onStart }) {
 
         } catch (error) {
             console.log(error)
+            toast.error(error.response?.data?.message || "Failed to analyze resume");
             setAnalyzing(false);
         }
     }
@@ -67,6 +69,7 @@ function Step1SetUp({ onStart }) {
 
         } catch (error) {
             console.log(error)
+            toast.error(error.response?.data?.message || "Failed to start interview");
             setLoading(false)
         }
     }
