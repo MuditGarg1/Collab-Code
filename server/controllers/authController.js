@@ -3,11 +3,13 @@ import generateToken from "../utils/generateToken.js";
 import sendEmail from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const cookieOptions = {
   httpOnly: true,
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  sameSite: "lax",
-  secure: process.env.NODE_ENV === "production"
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction
 };
 
 export const register = async (req, res) => {
@@ -39,8 +41,8 @@ export const register = async (req, res) => {
     .cookie("tempToken", tempToken, {
       httpOnly: true,
       maxAge: 10 * 60 * 1000,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production"
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction
     })
     .status(200)
     .json({ message: "OTP sent to email. Please verify." });
