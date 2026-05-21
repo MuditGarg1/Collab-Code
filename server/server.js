@@ -31,7 +31,7 @@ const io = new Server(server, {
 // Mount all socket logic from dedicated module
 setupSockets(io);
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 connectDB();
 
 app.use(express.json());
