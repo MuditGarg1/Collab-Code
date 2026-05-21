@@ -94,16 +94,16 @@ export default function ChatRoom({
   };
 
   return (
-    <aside className="h-full w-full flex flex-col bg-gray-900">
+    <aside className="h-full w-full flex flex-col bg-transparent">
       
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/80 backdrop-blur-md">
+      <div className="px-6 py-4 border-b border-gray-200/60 flex items-center justify-between bg-white/80 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm border border-indigo-500/30">
+          <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
             <MessageSquareText size={16} />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-gray-100 tracking-wide">
+            <span className="font-bold text-gray-800 tracking-wide">
               Live Chat
             </span>
             <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
@@ -115,7 +115,7 @@ export default function ChatRoom({
         {onClose && (
           <button
             onClick={onClose}
-            className="w-8 h-8 grid place-items-center rounded-lg bg-gray-800 border border-gray-700 text-gray-400 hover:text-red-400 hover:bg-red-500/20 hover:border-red-500/30 shadow-sm transition-all"
+            className="w-8 h-8 grid place-items-center rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 shadow-sm transition-all"
             title="Close chat"
           >
             <FaTimes size={14} />
@@ -127,7 +127,7 @@ export default function ChatRoom({
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-4 bg-gray-900"
+        className="flex-1 overflow-y-auto px-6 py-6 space-y-4 bg-white"
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center gap-3 text-gray-600">
@@ -147,11 +147,11 @@ export default function ChatRoom({
                   className={`max-w-[85%] rounded-[1.25rem] px-4 py-3 text-[15px] shadow-sm ${
                     self
                       ? "bg-indigo-600 text-white rounded-tr-sm"
-                      : "bg-gray-800 text-gray-200 rounded-tl-sm border border-gray-700"
+                      : "bg-gray-50 text-gray-800 rounded-tl-sm border border-gray-200"
                   }`}
                 >
                   {!self && (
-                    <div className="text-[11px] font-bold text-gray-400 mb-1 tracking-wide">
+                    <div className="text-[11px] font-bold text-gray-500 mb-1 tracking-wide">
                       {m.sender}
                     </div>
                   )}
@@ -171,20 +171,20 @@ export default function ChatRoom({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-gray-800 bg-gray-900/80 backdrop-blur-md">
-        <div className="flex items-center gap-3 bg-[#1e1e1e] rounded-2xl px-2 py-2 border border-gray-700 shadow-sm focus-within:border-indigo-500/50 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
+      <div className="p-4 border-t border-gray-200/60 bg-white/80 backdrop-blur-md">
+        <div className="flex items-center gap-3 bg-gray-50 rounded-2xl px-2 py-2 border border-gray-200 shadow-sm focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
           <input
             value={msg}
             onChange={handleInputChange}
             placeholder="Type a message..."
-            className="flex-1 bg-transparent text-[15px] px-3 outline-none placeholder:text-gray-500 text-gray-200 font-medium"
+            className="flex-1 bg-transparent text-[15px] px-3 outline-none placeholder:text-gray-400 text-gray-800 font-medium"
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), send())}
           />
 
           <button
             onClick={send}
             disabled={!msg.trim()}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-white shadow-md shadow-indigo-900/50"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-white shadow-md shadow-indigo-500/30"
             title="Send message"
           >
             <FaPaperPlane size={14} className="ml-[-2px]" />

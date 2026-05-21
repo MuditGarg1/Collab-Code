@@ -138,23 +138,23 @@ export default function CodeEditor({ socket, roomId, role }) {
   };
 
   return (
-    <div className="h-full w-full flex flex-col bg-[#111827]">
+    <div className="h-full w-full flex flex-col bg-transparent">
       
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/80 backdrop-blur-md relative z-20">
+      <div className="px-6 py-4 border-b border-gray-200/60 flex items-center justify-between bg-white/80 backdrop-blur-md relative z-20">
         
         <div className="flex items-center gap-4">
-          <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm border border-indigo-500/30">
+          <div className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
             <Code2 size={16} />
           </div>
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-100 tracking-wide">Editor</span>
+              <span className="font-bold text-gray-800 tracking-wide">Editor</span>
               <span className={`text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full border shadow-sm ${
                 isInterviewer 
-                  ? "bg-amber-500/20 text-amber-400 border-amber-500/30" 
-                  : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                  ? "bg-red-50 text-red-600 border-red-200" 
+                  : "bg-emerald-50 text-emerald-600 border-emerald-200"
               }`}>
                 {isInterviewer ? "Read Only" : "Live"}
               </span>
@@ -167,23 +167,23 @@ export default function CodeEditor({ socket, roomId, role }) {
           <div className="relative">
             <button
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-gray-800 border border-gray-700 shadow-sm rounded-xl hover:border-indigo-500/50 hover:text-indigo-400 transition-colors text-gray-300"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white border border-gray-200 shadow-sm rounded-xl hover:border-indigo-200 hover:text-indigo-600 transition-colors text-gray-700"
             >
               {SUPPORTED_LANGUAGES.find(l => l.value === language)?.name || "Language"}
               <ChevronDown size={14} className="text-gray-500" />
             </button>
 
             {showLanguageDropdown && (
-              <div className="absolute top-full mt-2 right-0 w-40 bg-gray-800 border border-gray-700 rounded-xl z-50 shadow-2xl overflow-hidden py-1">
+              <div className="absolute top-full mt-2 right-0 w-40 bg-white border border-gray-200 rounded-xl z-50 shadow-xl overflow-hidden py-1">
                 {SUPPORTED_LANGUAGES.map(lang => (
                   <button
-                    key={lang.value}
-                    onClick={() => handleLanguageChange(lang.value)}
-                    className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
-                      language === lang.value
-                        ? "bg-indigo-500/20 text-indigo-400"
-                        : "text-gray-400 hover:bg-gray-700 hover:text-gray-200"
-                    }`}
+                     key={lang.value}
+                     onClick={() => handleLanguageChange(lang.value)}
+                     className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
+                       language === lang.value
+                         ? "bg-indigo-50 text-indigo-600"
+                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                     }`}
                   >
                     {lang.name}
                   </button>
@@ -194,18 +194,18 @@ export default function CodeEditor({ socket, roomId, role }) {
 
           {/* Action Buttons */}
           {!isInterviewer && (
-            <div className="flex items-center gap-2 border-l border-gray-700 pl-3">
+            <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
               <button
                 onClick={downloadCode}
                 title="Download code"
-                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/20 border border-transparent hover:border-indigo-500/30 rounded-lg transition-all"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent rounded-lg transition-all"
               >
                 <Download size={16} />
               </button>
               <button
                 onClick={clearCode}
                 title="Clear code"
-                className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-red-500/20 border border-transparent hover:border-red-500/30 rounded-lg transition-all"
+                className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 border border-transparent rounded-lg transition-all"
               >
                 <Trash2 size={16} />
               </button>
@@ -215,11 +215,11 @@ export default function CodeEditor({ socket, roomId, role }) {
       </div>
 
       {/* Editor */}
-      <div className="flex-1 min-h-0 relative bg-[#1e1e1e] z-0">
+      <div className="flex-1 min-h-0 relative bg-white z-0">
         <Editor
           height="100%"
           language={language}
-          theme="vs-dark"
+          theme="light"
           value={code}
           onChange={handleChange}
           options={{
@@ -242,10 +242,10 @@ export default function CodeEditor({ socket, roomId, role }) {
       </div>
 
       {/* Footer - Status */}
-      <div className="px-6 py-2.5 border-t border-gray-800 bg-gray-900/80 backdrop-blur-md flex items-center justify-between text-xs font-medium text-gray-500">
+      <div className="px-6 py-2.5 border-t border-gray-200/60 bg-white/80 backdrop-blur-md flex items-center justify-between text-xs font-medium text-gray-500">
         <div className="flex items-center gap-4">
           <span>Ln {code.split("\n").length}, Col {code.length}</span>
-          <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+          <span className="w-1 h-1 rounded-full bg-gray-300"></span>
           <span>UTF-8</span>
         </div>
         
