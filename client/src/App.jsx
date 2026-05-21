@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { setUserData } from "./redux/userSlice";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import AboutUs from "./components/AboutUs";
-import Interview from "./pages/Interview";
-import InterviewPage from "./pages/InterviewPage";
-import Pricing from "./pages/Pricing";
-import InterviewHistory from "./pages/InterviewHistory";
-import InterviewReport from "./pages/InterviewReport";
-import InterviewEntry from "./InterviewComponent/Real/InterviewEntry";
-import Host from "./InterviewComponent/Real/Host";
-import Client from "./InterviewComponent/Real/Client";
-import PAuth from "./pages/PAuth";
-import Features from "./pages/Features";
+const Home = lazy(() => import("./pages/Home"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const AboutUs = lazy(() => import("./components/AboutUs"));
+const Interview = lazy(() => import("./pages/Interview"));
+const InterviewPage = lazy(() => import("./pages/InterviewPage"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
+const InterviewReport = lazy(() => import("./pages/InterviewReport"));
+const InterviewEntry = lazy(() => import("./InterviewComponent/Real/InterviewEntry"));
+const Host = lazy(() => import("./InterviewComponent/Real/Host"));
+const Client = lazy(() => import("./InterviewComponent/Real/Client"));
+const PAuth = lazy(() => import("./pages/PAuth"));
+const Features = lazy(() => import("./pages/Features"));
 import { getMe } from "./services/authServices";
 
 
@@ -68,71 +68,77 @@ function App() {
       {!isInterviewRoom && <Navbar />}
       
       <main className={`relative z-20 flex-1 ${!isInterviewRoom ? "pt-20" : "h-full flex flex-col"}`}>
-        <Routes>
-          <Route path="/" element={<Home />} />
+        <Suspense fallback={
+          <div className="flex h-full w-full items-center justify-center min-h-[50vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route path="/auth/*" element={<Navigate to="/login" replace />} />
+            <Route path="/auth/*" element={<Navigate to="/login" replace />} />
 
-          <Route
-            path="/login/*"
-            element={
-              userData ? <Navigate to="/" /> : <PAuth />
-            }
-          />
+            <Route
+              path="/login/*"
+              element={
+                userData ? <Navigate to="/" /> : <PAuth />
+              }
+            />
 
-          <Route
-            path="/dashboard"
-            element={
-              userData ? <Dashboard /> : <Navigate to="/login" />
-            }
-          />
+            <Route
+              path="/dashboard"
+              element={
+                userData ? <Dashboard /> : <Navigate to="/login" />
+              }
+            />
 
-          <Route path="/interview" element={<Interview />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/settings" element={<Navigate to={userData ? "/dashboard" : "/login"} replace />} />
-          <Route
-            path="/ai-interview"
-            element={
-              userData ? (
-                <InterviewPage />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+            <Route path="/interview" element={<Interview />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/settings" element={<Navigate to={userData ? "/dashboard" : "/login"} replace />} />
+            <Route
+              path="/ai-interview"
+              element={
+                userData ? (
+                  <InterviewPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
 
-          <Route path="/pricing" element={<Pricing />} />
+            <Route path="/pricing" element={<Pricing />} />
 
-          <Route
-            path="/history"
-            element={
-              userData ? (
-                <InterviewHistory />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+            <Route
+              path="/history"
+              element={
+                userData ? (
+                  <InterviewHistory />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
 
-          <Route
-            path="/report/:id"
-            element={
-              userData ? (
-                <InterviewReport />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
+            <Route
+              path="/report/:id"
+              element={
+                userData ? (
+                  <InterviewReport />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
 
-          <Route path="/real/host/:roomId" element={<Host />} />
-          <Route path="/real/client/:roomId" element={<Client />} />
+            <Route path="/real/host/:roomId" element={<Host />} />
+            <Route path="/real/client/:roomId" element={<Client />} />
 
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/about-us" element={<AboutUs />} />
 
-          <Route path="/interview-entry" element={<InterviewEntry />} />
-        </Routes>
+            <Route path="/interview-entry" element={<InterviewEntry />} />
+          </Routes>
+        </Suspense>
       </main>
 
       {!isInterviewRoom && <Footer />}
