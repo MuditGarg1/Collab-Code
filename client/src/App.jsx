@@ -19,7 +19,6 @@ import PAuth from "./pages/PAuth";
 import Features from "./pages/Features";
 import { getMe } from "./services/authServices";
 
-export const ServerUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 function App() {
   const dispatch = useDispatch();

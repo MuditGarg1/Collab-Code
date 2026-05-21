@@ -3,7 +3,7 @@ import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion";
 import axios from 'axios';
-import { ServerUrl } from '../App';
+import { ServerUrl } from '../config';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 function Pricing() {
