@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    visualizer({ open: true }), // Generate stats.html to analyze bundle sizes
+    visualizer({ open: false, filename: 'stats.html' }), // Generate stats.html to analyze bundle sizes
   ],
   server: {
     host: true, // Allow connections from other devices on local Wi-Fi
