@@ -1,6 +1,8 @@
 import { io } from "socket.io-client";
 
-const socket = io(`http://${window.location.hostname}:4000`, {
+const ServerUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+
+const socket = io(ServerUrl, {
   withCredentials: true,
   autoConnect: true,
   reconnection: true,
